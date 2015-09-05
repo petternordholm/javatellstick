@@ -34,16 +34,6 @@ Development
 - Error string exceptions.
 - more... 
 
-### The "Apps folder in trunk"
-
-To run the jar files in the apps folder (trunk/apps) you will need to take a look at "config.cnf" in the apps folder. Point  "telldusFolder" to the telldus installation! That's it!
-
-Currently Javatellstick ships with:
-
-- A GUI (client.jar) that can communicate with tellstick devices.
-- Some more apps that are under development. 
-
-
 Comes with a test example how how to use the API! See: package org.tellstick.server;
 
 
