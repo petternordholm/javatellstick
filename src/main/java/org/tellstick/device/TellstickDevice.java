@@ -46,19 +46,10 @@ public class TellstickDevice implements Comparable<TellstickDevice>,Device{
 	protected String protocol;
 	
 	/**
-	 * Holds the current SwitchableDeviceImpl Status.
-	 */
-	protected int status;
-	
-	/**
 	 * Holds the device type.
 	 */
 	protected DeviceType deviceType;
 	
-	/**
-	 * Holds the last send data
-	 */
-	protected String data;
 	/**
 	 * Holds all the supported methods! Must be set with setSupportedMethods.
 	 * @see TellstickDevice.setSupportedMethods(int)
@@ -71,24 +62,38 @@ public class TellstickDevice implements Comparable<TellstickDevice>,Device{
 	static final public int TELLSTICK_SUCCESS = 0;
 	
 	
+	public enum SupportedMethod
+	{
+	    TELLSTICK_BELL(JNA.CLibrary.TELLSTICK_BELL),
+	    TELLSTICK_TURNOFF(JNA.CLibrary.TELLSTICK_TURNOFF),
+	    TELLSTICK_TURNON(JNA.CLibrary.TELLSTICK_TURNON),
+	    TELLSTICK_DIM(JNA.CLibrary.TELLSTICK_DIM),
+	    TELLSTICK_EXECUTE(JNA.CLibrary.TELLSTICK_EXECUTE),
+	    TELLSTICK_STOP(JNA.CLibrary.TELLSTICK_STOP);
+	    
+	    private final int cLibraryValue;
+	    
+	    SupportedMethod(int cLibraryValue)
+	    {
+	        this.cLibraryValue = cLibraryValue;
+	    }
+	    
+	    public int getCLibraryValue()
+	    {
+	        return this.cLibraryValue;
+	    }
+	}
+	
 	/**
 	 * This is a must to set for all applications that is getting developed!
 	 * If not set SupportedMethodsException will get thrown whenever you try to get / create devices.
-	 * Usage:
-	 * // Set supported methods for this app.
-	 * TellstickDevice.setSupportedMethods(
-	 * JNA.CLibrary.TELLSTICK_BELL | 
-	 * JNA.CLibrary.TELLSTICK_TURNOFF | 
-	 * JNA.CLibrary.TELLSTICK_TURNON | 
-	 * JNA.CLibrary.TELLSTICK_DIM | 
-	 * JNA.CLibrary.TELLSTICK_LEARN |
-	 * JNA.CLibrary.TELLSTICK_EXECUTE |
-	 * JNA.CLibrary.TELLSTICK_STOP
-	 * );
-	 * @param supportedM
 	 */
-	static public void setSupportedMethods(int supportedM){
-		supportedMethods = supportedM;
+	static public void setSupportedMethods(SupportedMethod... supportedMethods){
+	    TellstickDevice.supportedMethods = 0;
+	    for(SupportedMethod sm : supportedMethods)
+	    {
+	        TellstickDevice.supportedMethods |= sm.getCLibraryValue();
+	    }
 	}
 	
 	
@@ -123,12 +128,6 @@ public class TellstickDevice implements Comparable<TellstickDevice>,Device{
 		this.protocol = JNA.getPointerValue(JNA.CLibrary.INSTANCE.tdGetProtocol(deviceId));
 	//	JNA.CLibrary.INSTANCE.tdReleaseString(protocol);
 		
-		// Get last status ( EMULATED 2 way communication ) Works with TS DUO
-		this.status = JNA.CLibrary.INSTANCE.tdLastSentCommand(deviceId, getSupportedMethods());
-		
-		if (this.status == JNA.CLibrary.TELLSTICK_DIM) {
-			this.data = JNA.getPointerValue(JNA.CLibrary.INSTANCE.tdLastSentValue(deviceId));
-		}
 		// Get the device type.
 		this.deviceType = DeviceType.getDeviceTypeById(JNA.CLibrary.INSTANCE.tdGetDeviceType(deviceId));
 		
@@ -382,7 +381,10 @@ public class TellstickDevice implements Comparable<TellstickDevice>,Device{
 	 * @return
 	 */
 	public int getStatus(){
-		return status;
+        // Get last status ( EMULATED 2 way communication ) Works with TS DUO
+        int status = JNA.CLibrary.INSTANCE.tdLastSentCommand(deviceId, getSupportedMethods());
+        
+        return status;
 	}
 	
 	/**
@@ -492,21 +494,10 @@ public class TellstickDevice implements Comparable<TellstickDevice>,Device{
 	}
 
 
-	public String getData() {
-		return data;
-	}
-
-
-	public void setData(String data) {
-		this.data = data;
-	}
-
-
 	@Override
 	public String toString() {
 		return "TellstickDevice [deviceId=" + deviceId + ", name=" + name
-				+ ", status=" + status + ", deviceType=" + deviceType
-				+ ", data=" + data + "]";
+				+ ", status=" + getStatus() + ", deviceType=" + deviceType + "]";
 	}
 	
 	

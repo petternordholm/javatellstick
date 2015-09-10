@@ -28,5 +28,10 @@ public interface SwitchableDevice{
 	 * @return
 	 */
 	public String getType();
+
+	/**
+	 * Returns true if the last known command to this device was on.
+	 */
+    boolean isOn();
 	
 }

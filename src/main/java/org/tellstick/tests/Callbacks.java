@@ -1,15 +1,5 @@
 package org.tellstick.tests;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
-
-import org.tellstick.JNA;
-import org.tellstick.device.DeviceNotSupportedException;
-import org.tellstick.device.SupportedMethodsException;
-import org.tellstick.device.TellstickDevice;
-
-import com.sun.jna.Pointer;
 
 /**
  * TEST.
@@ -24,7 +14,7 @@ public class Callbacks {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) throws SupportedMethodsException {
+/*	public static void main(String[] args) throws SupportedMethodsException {
 		Properties configFile = new Properties();
 		try {
 			configFile.load(new FileReader("config.cnf"));
@@ -100,5 +90,5 @@ public class Callbacks {
 
 		}
 	}
-
+*/
 }

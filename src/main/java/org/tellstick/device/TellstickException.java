@@ -18,7 +18,7 @@ import com.sun.jna.Pointer;
  * @author jarlebh
  * @since 1.5.0
  */
-public class TellstickException extends Exception{
+public class TellstickException extends RuntimeException {
 
 	
 	/**
